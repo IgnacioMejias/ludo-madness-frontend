@@ -1,0 +1,22 @@
+li {
+    text-align: left;
+}
+
+p { 
+    font-family: sans-serif;
+    text-align: justify;
+}
+
+
+.letter {
+    align-self: center;
+    color: yellow;
+    white-space: nowrap;
+    font-size: 5em;
+    font-family: sans-serif;
+    letter-spacing: 0.1em;
+    transition: 0.3s;
+    text-shadow: 1px 1px 0 grey, 1px 2px 0 grey, 1px 3px 0 grey, 1px 4px 0 grey,
+      3px 10px 10px black;
+  }
+

@@ -1,0 +1,58 @@
+.card {
+    width: 400px;
+    height: 350px;
+    margin: 30px;
+    margin-top: 40px;
+    background-color: #496063;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+} 
+
+.card-image  img {
+    border-radius: 50%;
+    height: 150px;
+}
+
+.card-content {
+    text-align: center;
+    font-family: Georgia;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content p{
+    text-align: justify;
+    color: white;
+}
+
+
+.card:hover{
+  transform: scale(1.1);
+}
+
+.card-text {
+  margin-bottom: 0; 
+}
+
+.card-name {
+  margin: auto;
+  font-family: Georgia;
+  font-size: 24px; 
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.856);
+}
+
+.card-description {
+  margin-left: 6px;
+  margin-right: 6px;
+  text-align: justify;
+  font-size: 18px;
+  font: georgia;
+  color: rgba(240, 254, 255, 0.932);
+  
+}
+
+.project-link {
+    color : #496063;
+    font-size: 20px;
+}

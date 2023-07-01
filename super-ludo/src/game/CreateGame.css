@@ -1,0 +1,43 @@
+.container {
+    display: grid;
+    padding: 50px;
+    gap: 30px; /* Optional gap between rows */
+  }
+  
+  .row {
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 600px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+  
+  .content {
+    font-size: 30px;
+    text-align: left;
+  }
+  
+  .option-block {
+    text-align: right;
+  }
+  
+
+select {
+    text-align: center;
+    width: 150px;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 30px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 10px;
+    margin: 0;
+    background: rgb(48, 42, 42);
+    border: 1px solid white;
+    outline: none;
+    /* Add additional styling as needed */
+  }
+

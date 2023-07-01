@@ -1,0 +1,38 @@
+
+.instruction-container {
+    position: absolute;
+    max-width: 70%;
+    max-height: 100%;
+    margin: 0 auto; 
+    padding: 20px;
+    overflow-wrap: break-word;
+    text-align: center;
+}
+
+.instruction-container p {
+    font-size: 30px;
+}
+
+.instruction-container .red {
+    color: rgb(73, 35, 35);
+    text-shadow: 1px 1px 0 rgb(182, 81, 81), 1px 2px 0 rgb(182, 81, 81), 1px 3px 0 rgb(182, 81, 81), 1px 4px 0 rgb(182, 81, 81),
+    1px 2px 4px black;
+}
+  
+.instruction-container .yellow {
+    color: rgb(79, 79, 31);
+    text-shadow: 1px 1px 0 rgb(211, 211, 81), 1px 2px 0 rgb(211, 211, 81), 1px 3px 0 rgb(211, 211, 81), 1px 4px 0 rgb(211, 211, 81),
+    1px 2px 4px black;
+}
+  
+.instruction-container .green {
+    color: rgb(25, 71, 25);
+    text-shadow: 1px 1px 0 rgb(54, 143, 54), 1px 2px 0 rgb(54, 143, 54), 1px 3px 0 rgb(54, 143, 54), 1px 4px 0 rgb(54, 143, 54),
+    1px 2px 4px black;
+}
+  
+.instruction-container .blue {
+    color: rgb(31, 31, 95);
+    text-shadow: 1px 1px 0 rgb(65, 65, 200), 1px 2px 0 rgb(65, 65, 200), 1px 3px 0 rgb(65, 65, 200), 1px 4px 0 rgb(65, 65, 200),
+    1px 2px 4px black;
+}

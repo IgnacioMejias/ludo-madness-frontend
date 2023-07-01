@@ -1,0 +1,97 @@
+.background {
+    height: 50%;
+    width: 50%;
+}
+
+li {
+    text-align: left;
+}
+
+p { 
+    font-family: sans-serif;
+    text-align: justify;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.button {
+    height: 80px;
+    width: 450px;
+    background-color: rgb(55, 123, 138);
+    filter: brightness(120%);
+    border-radius: 5px;
+}
+
+.button:hover {
+    color: darkgrey;
+    filter: brightness(120%);
+    }
+
+.button a {
+    height: 100%;
+    width: 100%;
+    color: darkgrey;
+    white-space: nowrap;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    font-family: sans-serif;
+    letter-spacing: 0.1em;
+    transition: 0.3s;
+    text-shadow: 1px 1px 0 grey, 1px 2px 0 grey, 1px 3px 0 grey, 1px 4px 0 grey,
+      3px 10px 10px black;
+  }
+
+.button a:hover {
+color: darkgrey;
+filter: brightness(120%);
+}
+
+.colorful-title {
+    color: darkgrey;
+    white-space: nowrap;
+    font-size: 5em;
+    font-family: sans-serif;
+    letter-spacing: 0.1em;  
+  }
+  
+  .red {
+    color: rgb(227, 90, 90);
+    text-shadow: 1px 1px 0 rgb(182, 81, 81), 1px 2px 0 rgb(182, 81, 81), 1px 3px 0 rgb(182, 81, 81), 1px 4px 0 rgb(182, 81, 81),
+    3px 10px 10px black;
+  }
+  
+  .yellow {
+    color: rgb(255, 255, 97);
+    text-shadow: 1px 1px 0 rgb(211, 211, 81), 1px 2px 0 rgb(211, 211, 81), 1px 3px 0 rgb(211, 211, 81), 1px 4px 0 rgb(211, 211, 81),
+    3px 10px 10px black;
+  }
+  
+  .green {
+    color: rgb(74, 201, 74);
+    text-shadow: 1px 1px 0 rgb(54, 143, 54), 1px 2px 0 rgb(54, 143, 54), 1px 3px 0 rgb(54, 143, 54), 1px 4px 0 rgb(54, 143, 54),
+    3px 10px 10px black;
+  }
+  
+  .blue {
+    color: rgb(82, 82, 250);
+    text-shadow: 1px 1px 0 rgb(65, 65, 200), 1px 2px 0 rgb(65, 65, 200), 1px 3px 0 rgb(65, 65, 200), 1px 4px 0 rgb(65, 65, 200),
+    3px 10px 10px black;
+  }
+
+.nav-home {
+    font-family: sans-serif;
+    font-size: 46px;
+    width: 100%;
+    background-color: rgb(55, 123, 138);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 50px;
+  }

@@ -1,0 +1,14 @@
+.statistics-container {
+    transform: translate(370%, -20%);
+    height: 500px;
+    width: 250px;
+    display: flex;
+    align-items: center;
+    background-color: rgb(55, 123, 138);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.statistics p {
+    font-size: 1.4em;
+}

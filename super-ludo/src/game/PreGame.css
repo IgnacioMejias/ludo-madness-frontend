@@ -1,0 +1,49 @@
+.buttons-container {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 300px;
+}
+
+.button {
+  height: 80px;
+  width: 450px;
+  background: none;
+  filter: brightness(120%);
+  border-radius: 5px;
+}
+
+.button:hover {
+  color: darkgrey;
+  filter: brightness(120%);
+  }
+
+.button a {
+  height: 100%;
+  width: 100%;
+  color: darkgrey;
+  white-space: nowrap;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3em;
+  font-family: sans-serif;
+  letter-spacing: 0.1em;
+  transition: 0.3s;
+  text-shadow: 1px 1px 0 grey, 1px 2px 0 grey, 1px 3px 0 grey, 1px 4px 0 grey,
+    3px 10px 10px black;
+}
+
+.button a:hover {
+color: darkgrey;
+filter: brightness(120%);
+}
+
+.colorful-title {
+  color: darkgrey;
+  white-space: nowrap;
+  font-size: 5em;
+  font-family: sans-serif;
+  letter-spacing: 0.1em;  
+  margin-top: -200px;
+}
