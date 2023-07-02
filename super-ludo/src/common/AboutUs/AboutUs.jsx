@@ -1,8 +1,8 @@
 import React from "react";
 import './AboutUs.css';
 import Card from './Cards';
-import mejis_image from '../../assets/mejis.jpg'; 
-import rai_image from '../../assets/rai.jpeg';
+import mejis_image from '/assets/mejis.jpg'; 
+import rai_image from '/assets/rai.jpeg';
 
 
 export default function AboutUs() {
@@ -25,7 +25,7 @@ export default function AboutUs() {
             <div>
             <Card
                 name="Raimundo Fuchslocher"
-                imageSrc={rai_image}
+                imageSrc="'/assets/rai.jepg'"
                 altText="FudiLove"
                 description="Native from Osorno, he came to the big city because he wants a place in the big leagues.
                             He has one weakness, and it's name is League of Legends."
@@ -35,7 +35,7 @@ export default function AboutUs() {
             <div>
             <Card
                 name="Ignacio Mejías"
-                imageSrc={mejis_image}
+                imageSrc="/assets/mejis.jpg"
                 altText="MejisKingdom"
                 description="Native from Santiago, he is here to eat the scene. His actual weakness is 
                             called Rocket League."

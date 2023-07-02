@@ -11,6 +11,7 @@ import Signup from '../profile/Signup'
 import UserCheck from '../protected/UserCheck'
 import LogoutButton from '../profile/Logout'
 import Authentication from '../auth/Authentication'
+import GameBoard from '../game/components/GameBoard/GameBoard'
 
 function Routing(){
   return (
@@ -28,6 +29,7 @@ function Routing(){
         <Route path={"/logout"} element={<LogoutButton />}/>
         <Route path={"/signup"} element={<Signup />}/>
         <Route path={"/usercheck"} element={<UserCheck />}/>
+        <Route path={"/gameboard"} element={<GameBoard />}/>
       </Routes>
     </BrowserRouter>
   )

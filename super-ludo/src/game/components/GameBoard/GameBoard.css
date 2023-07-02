@@ -1,0 +1,47 @@
+.gameboard-container {
+    display: flex;
+    place-content: center;
+    width: 1200px;
+}
+
+#gameboard {
+    display: grid;
+    grid-template-columns: repeat(15, 50px);
+    grid-template-rows: repeat(15, 50px);
+    width: 750px;
+    height: 750px;
+    background-color: white;
+    color: black;
+}
+
+.dice-container {
+    height: 200px;
+    width: 300px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin-top: 240px;
+    margin-right: 100px;
+    grid-template-rows: repeat(3, 80px);
+}
+
+.dice-container h3 {
+    font-size: 20px;
+}
+
+#dice {
+    margin-top: 20px;
+    font-size: 200px;
+}
+
+.dice-container button {
+    margin-top: 40px;
+    width: 200px;
+    background-color:rgb(44, 44, 44);
+    border: none;
+}
+
+.dice-container button:hover {
+    border: none;
+    background-color: rgb(107, 110, 112);
+}

@@ -54,6 +54,13 @@ export default function CreateGame() {
                 </select>
                 </div>
             </div>
+
+            <div className="buttons-container" style={{ marginTop: '20px' }}>
+                <div className="button">
+                    <a href='/gameboard'> CREATE <br></br>GAME </a>
+                </div>  
+            </div>
+            
             </div>
 
 
