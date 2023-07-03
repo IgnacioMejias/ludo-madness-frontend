@@ -1,7 +1,7 @@
 import React, { useEffect, useState , useContext} from 'react';
 import axios from 'axios';
 import { AuthContext } from '../auth/AuthContext';
-import VITE_BACKEND_URL from '../config';
+import VITE_BACKEND_URL from '../config'
 
 const UserCheck = () => { 
   const { token } = useContext(AuthContext)

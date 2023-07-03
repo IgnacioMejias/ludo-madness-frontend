@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import { AuthContext } from '../auth/AuthContext';
 import axios from 'axios';
-import VITE_BACKEND_URL from '../config';
+import VITE_BACKEND_URL from '../config'
 
 function Signup(){ 
     const navigate = useNavigate();

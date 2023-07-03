@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import './CreateGame.css';
 import { AuthContext } from '../auth/AuthContext';
 import axios from 'axios';
-import VITE_BACKEND_URL from '../config';
+import { v4 as uuidv4 } from 'uuid';
+import VITE_BACKEND_URL from '../config'
+
 
 export default function CreateGame() {
     const navigate = useNavigate();
@@ -11,26 +13,10 @@ export default function CreateGame() {
     const [error, setError] = useState(false);
     const [msg, setMsg] = useState('');
 
-    const createPlayer = async (event) => {
-      event.preventDefault();
-  
-      axios.post(`${VITE_BACKEND_URL}/players`, {
-          user_name: user.name
-        }).then((response) => {
-          setError(false);
-          setMsg("Jugador creado!");
-          createGame();
-  
-        }).catch((error) => {
-          console.error('An error occurred while trying to create the player:', error);
-          setError(true);
-          setMsg(`${error.response.data.error}`);
-        })
-      };
-      
     const createGame = async () => {
         try {
-          const gameCode = '1234';
+          const gameCode = uuidv4(); // Generate a random game code
+          // const gameCode = '1234';
           setGamecode(gameCode);
           await axios.post(`${VITE_BACKEND_URL}/games`, {
             game_code: gameCode,
@@ -47,6 +33,24 @@ export default function CreateGame() {
           setMsg(`${error.response.data.error}`);
         }
       };
+      
+
+  const createPlayer = async (event) => {
+    event.preventDefault();
+
+    axios.post(`${VITE_BACKEND_URL}/players`, {
+        user_name: user.name
+      }).then((response) => {
+        setError(false);
+        setMsg("Jugador creado!");
+        createGame();
+
+      }).catch((error) => {
+        console.error('An error occurred while trying to create the player:', error);
+        setError(true);
+        setMsg(`${error.response.data.error}`);
+      })
+    }
 
     
 

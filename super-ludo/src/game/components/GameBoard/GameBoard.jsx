@@ -3,7 +3,7 @@ import axios from 'axios';
 import './GameBoard.css'
 import Tile from '../Tile/Tile'
 import { AuthContext } from '../../../auth/AuthContext'
-import VITE_BACKEND_URL from '../../../config';
+import VITE_BACKEND_URL from '../../../config'
 
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"]
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
@@ -57,10 +57,10 @@ export default function GameBoard() {
         { image: '/assets/logos/js.svg', x: 12, y: 12, pieceNumber: 4 }
     ]);
     const [blues, setBlues] = useState([
-        { image: '/assets/logos/react.svg', x: 11, y: 3, pieceNumber: 1  },
-        { image: '/assets/logos/react.svg', x: 12, y: 3, pieceNumber: 2  },
-        { image: '/assets/logos/react.svg', x: 11, y: 2, pieceNumber: 3  },
-        { image: '/assets/logos/react.svg', x: 12, y: 2, pieceNumber: 4  }
+        { image: '/assets/logos/react.svg', x: 11, y: 3, pieceNumber: 1 },
+        { image: '/assets/logos/react.svg', x: 12, y: 3, pieceNumber: 2 },
+        { image: '/assets/logos/react.svg', x: 11, y: 2, pieceNumber: 3 },
+        { image: '/assets/logos/react.svg', x: 12, y: 2, pieceNumber: 4 }
     ]);
     
     useEffect(() => {
@@ -148,7 +148,6 @@ export default function GameBoard() {
     
     
     const handlePieceClick = (pieceNumber) => {
-        console.log(pieceNumber);
         setSelectedPiece(pieceNumber);
 
         };
@@ -169,14 +168,44 @@ export default function GameBoard() {
         
 
     const reDraw = () => {
+        console.log(rolledValue);
         if (gameData.state && gameData.state.player1) {
           const player1Data = gameData.state.player1;
           setReds(prevReds => {
             return prevReds.map((redPiece, i) => {
-              const position = player1Data[`piece${i + 1}`].piece.position;
-              const box = boxes.find(box => box.number === position);
-              if (box) {
-                return { ...redPiece, x: box.x, y: box.y };
+              let position = { x: 0, y: 0 };
+              if (player1Data[`piece${i + 1}`].piece.status === "finalRow") {
+                const leftToFinish =  player1Data[`piece${i + 1}`].piece.left_to_finish;  
+                if (leftToFinish === 5) {
+                    position = { x: 7, y: 1 };
+                }
+                else if (leftToFinish === 4) {
+                    position = { x: 7, y: 2 };
+                }
+                else if (leftToFinish === 3) {
+                    position = { x: 7, y: 3 };
+                }
+                else if (leftToFinish === 2) {
+                    position = { x: 7, y: 4 };
+                }
+                else if (leftToFinish === 1) {
+                    position = { x: 7, y: 5 };
+                }
+                else if (leftToFinish === 0) {
+                    position = { x: 7, y: 7 };
+                }
+                return { ...redPiece, x: position.x, y: position.y, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+              }
+              else if (player1Data[`piece${i + 1}`].piece.status === "finished") {
+                position = { x: 7, y: 7 };
+                return { ...redPiece, x: position.x, y: position.y, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+              }
+              else {
+                const position = player1Data[`piece${i + 1}`].piece.position;
+                const box = boxes.find(box => box.number === position);
+                if (box) {
+                    return { ...redPiece, x: box.x, y: box.y, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                }
               }
               return redPiece;
             });
@@ -221,7 +250,6 @@ export default function GameBoard() {
               });
             });
           }
-        
         handleNextTurn();
         };
     
@@ -229,9 +257,10 @@ export default function GameBoard() {
         if (gameData) {
             reDraw();
         }
-    }, [gameData]);
+    }, [gameData, rolledValue]);
 
     const draw = () => {
+        console.log(rolledValue);
         let newBoard = [];
         for (let j = verticalAxis.length - 1; j >= 0; j--) {
             for (let i = 0; i < horizontalAxis.length; i++){

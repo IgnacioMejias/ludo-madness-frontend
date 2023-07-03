@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import './JoinGame.css'
 import { AuthContext } from '../auth/AuthContext'
 import axios from 'axios';
-import VITE_BACKEND_URL from '../config';
+import VITE_BACKEND_URL from '../config'
+
 
 export default function JoinGame() {
     const { user, gamecode } = useContext(AuthContext);
@@ -28,7 +29,7 @@ export default function JoinGame() {
         .then((response) => {
             // El jugador ha sido creado con éxito. Ahora lo añadimos al juego.
             const playerId = response.data.id; // Extraer el ID del jugador de la respuesta
-            return axios.post(`${VITE_BACKEND_URL}/games/${'1234'}/participants`, {
+            return axios.post(`${VITE_BACKEND_URL}/games/${inputGameCode}/participants`, {
                 playerId
             });
         })
