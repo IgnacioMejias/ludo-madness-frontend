@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import './CreateGame.css';
 import { AuthContext } from '../auth/AuthContext';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import VITE_BACKEND_URL from '../config';
 
 export default function CreateGame() {
