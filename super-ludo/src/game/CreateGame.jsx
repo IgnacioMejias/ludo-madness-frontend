@@ -4,6 +4,7 @@ import './CreateGame.css';
 import { AuthContext } from '../auth/AuthContext';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import VITE_BACKEND_URL from '../config';
 
 export default function CreateGame() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function CreateGame() {
           //const gameCode = uuidv4(); // Generate a random game code
           const gameCode = '1234';
           setGamecode(gameCode);
-          await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games`, {
+          await axios.post(`${VITE_BACKEND_URL}/games`, {
             game_code: gameCode,
             user_name: user.name,
           });
@@ -36,7 +37,7 @@ export default function CreateGame() {
   const createPlayer = async (event) => {
     event.preventDefault();
 
-    axios.post(`${import.meta.env.VITE_BACKEND_URL}/players`, {
+    axios.post(`${VITE_BACKEND_URL}/players`, {
         user_name: user.name
       }).then((response) => {
         setError(false);
