@@ -11,6 +11,23 @@ export default function CreateGame() {
     const [error, setError] = useState(false);
     const [msg, setMsg] = useState('');
 
+    const createPlayer = async (event) => {
+      event.preventDefault();
+  
+      axios.post(`${VITE_BACKEND_URL}/players`, {
+          user_name: user.name
+        }).then((response) => {
+          setError(false);
+          setMsg("Jugador creado!");
+          createGame();
+  
+        }).catch((error) => {
+          console.error('An error occurred while trying to create the player:', error);
+          setError(true);
+          setMsg(`${error.response.data.error}`);
+        })
+      };
+      
     const createGame = async () => {
         try {
           const gameCode = '1234';
@@ -30,24 +47,6 @@ export default function CreateGame() {
           setMsg(`${error.response.data.error}`);
         }
       };
-      
-
-  const createPlayer = async (event) => {
-    event.preventDefault();
-
-    axios.post(`${VITE_BACKEND_URL}/players`, {
-        user_name: user.name
-      }).then((response) => {
-        setError(false);
-        setMsg("Jugador creado!");
-        createGame();
-
-      }).catch((error) => {
-        console.error('An error occurred while trying to create the player:', error);
-        setError(true);
-        setMsg(`${error.response.data.error}`);
-      })
-    }
 
     
 
