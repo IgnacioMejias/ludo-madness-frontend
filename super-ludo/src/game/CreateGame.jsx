@@ -13,7 +13,6 @@ export default function CreateGame() {
 
     const createGame = async () => {
         try {
-          //const gameCode = uuidv4(); // Generate a random game code
           const gameCode = '1234';
           setGamecode(gameCode);
           await axios.post(`${VITE_BACKEND_URL}/games`, {
