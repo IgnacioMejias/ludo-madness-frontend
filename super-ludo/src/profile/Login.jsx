@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { AuthContext } from '../auth/AuthContext';
 import axios from 'axios';
-import VITE_BACKEND_URL from '../config';
 
 function Login(){ 
     const navigate = useNavigate();
@@ -16,7 +15,7 @@ function Login(){
         event.preventDefault();
         
         
-        axios.post(`${VITE_BACKEND_URL}/login`, {
+        axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
             email: email,
             password: password
           }).then((response) => {

@@ -1,84 +1,36 @@
 .tile {
-    display: grid;
-    place-content: center;
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
+  display: grid;
+  place-content: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.tile.clicked img {
+  transform: scale(1.2);
 }
 
 .white-tile {
-    background-color: white;
+  background-color: white;
 }
 
 .red-tile {
-    background-color: red;
+  background-color: red;
 }
 
 .green-tile {
-    background-color: green;
+  background-color: green;
 }
 
 .yellow-tile {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .blue-tile {
-    background-color: blue;
+  background-color: blue;
 }
 
 .tile img {
-    width: 42px;
+  width: 42px;
+  transition: transform 0.2s ease-in-out;
 }
-
-
-.all-mix-tile {
-    background-color: white;
-    display: flex;
-  }
-  
-  .all-mix-tile::before {
-    content: "";
-    position: relative;
-    width: 35px;
-    height: 35px;
-    background-image: linear-gradient(to bottom right, transparent 50%, red 50%);
-    z-index: 1;
-    transform: rotate(0deg);
-  }
-  
-  .all-mix-tile::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 25px;
-    height: 25px;
-    background-image: linear-gradient(to bottom right, yellow 50%, transparent 50%);
-    z-index: 1;
-    transform: rotate(45deg);
-  }
-  
-  .all-mix-tile .green-triangle {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    width: 25px;
-    height: 25px;
-    background-image: linear-gradient(to top right, transparent 50%, green 50%);
-    z-index: 0;
-    transform: rotate(45deg);
-  }
-  
-  .all-mix-tile .blue-triangle {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 25px;
-    height: 25px;
-    background-image: linear-gradient(to top left, blue 50%, transparent 50%);
-    z-index: 0;
-    transform: rotate(45deg);
-  }
-  

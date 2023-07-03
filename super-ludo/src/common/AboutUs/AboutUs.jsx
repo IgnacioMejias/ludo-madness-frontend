@@ -18,10 +18,10 @@ export default function AboutUs() {
             <p>We are two friends who met in an online project way back on the first year of coronavirus. Time passed, and we 
                 randomly came accross each other in a football game. Then, randomly again we met after the probability course final exam.
                 Since then, we keep contact and we are now working together in this project. We also worked together in the 
-                <a class="project-link" href="https://proyecto-software-l5i6.onrender.com/"> software</a> project (IIC-2143), check it out if you're interested :). 
+                <a className="project-link" href="https://proyecto-software-l5i6.onrender.com/"> software</a> project (IIC-2143), check it out if you're interested :). 
              </p>
         </div>
-        <div class="container"> 
+        <div className="container"> 
             <div>
             <Card
                 name="Raimundo Fuchslocher"

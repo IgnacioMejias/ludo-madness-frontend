@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Statistics from './Statistics'
 import Description from './Description'
-import backgroundImage from './../assets/background.jpg'
+import backgroundImage from '/assets/background.jpg'
 import { AuthContext } from '../auth/AuthContext'
 import LogoutButton from '../profile/Logout';
 export default function Home() {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState , useContext} from 'react';
 import axios from 'axios';
 import { AuthContext } from '../auth/AuthContext';
-import VITE_BACKEND_URL from '../config';
 
 const UserCheck = () => { 
   const { token } = useContext(AuthContext)
@@ -11,7 +10,7 @@ const UserCheck = () => {
     console.log(token);
     axios({
       method: 'get',
-      url: `${VITE_BACKEND_URL}/scope-example/protecteduser`,
+      url: `${import.meta.env.VITE_BACKEND_URL}/scope-example/protecteduser`,
       headers: {
         'Authorization': `Bearer ${token}`
       }

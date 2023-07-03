@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import './GameBoard.css'
 import Tile from '../Tile/Tile'
+import { AuthContext } from '../../../auth/AuthContext'
 
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"]
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
@@ -20,243 +22,280 @@ const boxes = [{number: 1, x: 6, y: 2}, {number: 2, x: 6, y: 3}, {number: 3, x: 
                {number: 53, x: 8, y: 0}, {number: 54, x: 7, y: 0}, {number: 55, x: 6, y: 0}, {number: 56, x: 6, y: 1}
             ]
 
-let startReds = [
-    { image: '/assets/logos/html.svg', x: 3, y: 3 },
-    { image: '/assets/logos/html.svg', x: 2, y: 2 },
-    { image: '/assets/logos/html.svg', x: 2, y: 3 },
-    { image: '/assets/logos/html.svg', x: 3, y: 2 }
-];
-let startGreens = [
-    { image: '../src/assets/logos/node.svg', x: 2, y: 11 },
-    { image: '../src/assets/logos/node.svg', x: 3, y: 12 },
-    { image: '../src/assets/logos/node.svg', x: 2, y: 12 },
-    { image: '../src/assets/logos/node.svg', x: 3, y: 11 }
-];
-let startYellows = [
-    { image: '../src/assets/logos/js.svg', x: 11, y: 11 },
-    { image: '../src/assets/logos/js.svg', x: 11, y: 12 },
-    { image: '../src/assets/logos/js.svg', x: 12, y: 11 },
-    { image: '../src/assets/logos/js.svg', x: 12, y: 12 }
-];
-let startBlues = [
-    { image: '../src/assets/logos/react.svg', x: 11, y: 3 },
-    { image: '../src/assets/logos/react.svg', x: 12, y: 3 },
-    { image: '../src/assets/logos/react.svg', x: 11, y: 2 },
-    { image: '../src/assets/logos/react.svg', x: 12, y: 2 }
-];
 
 export default function GameBoard() { 
+
+    const { user } = useContext(AuthContext);
+    const [players, setPlayers] = useState([]);
+    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+    const [selectedPiece, setSelectedPiece] = useState(null);
     const [rolledNumber, setRolledNumber] = useState("⚀");
-    const [currentPlayer, setCurrentPlayer] = useState(1);
-    const [playerInTurn, setPlayerInTurn] = useState(1);
+    const [rolledValue, setRolledValue] = useState(null);
+    const [playerInTurn, setPlayerInTurn] = useState(null);
+    const [gameCode, setGameCode] = useState(null);
+    const [gameData, setGameData] = useState(null);
+    const [error, setError] = useState(false);
+    const [msg, setMsg] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [reds, setReds] = useState([
-        { image: '/assets/logos/html.svg', x: 3, y: 3 },
-        { image: '/assets/logos/html.svg', x: 2, y: 2 },
-        { image: 'assets/logos/html.svg', x: 2, y: 3 },
-        { image: '/assets/logos/html.svg', x: 3, y: 2 }
+        { image: '/assets/logos/html.svg', x: 3, y: 3, pieceNumber: 1 },
+        { image: '/assets/logos/html.svg', x: 2, y: 2, pieceNumber: 2 },
+        { image: '/assets/logos/html.svg', x: 2, y: 3, pieceNumber: 3 },
+        { image: '/assets/logos/html.svg', x: 3, y: 2, pieceNumber: 4 }
     ]);
     const [greens, setGreens] = useState([
-        { image: '../src/assets/logos/node.svg', x: 2, y: 11 },
-        { image: '../src/assets/logos/node.svg', x: 3, y: 12 },
-        { image: '../src/assets/logos/node.svg', x: 2, y: 12 },
-        { image: '../src/assets/logos/node.svg', x: 3, y: 11 }
+        { image: '/assets/logos/node.svg', x: 2, y: 11, pieceNumber: 1 },
+        { image: '/assets/logos/node.svg', x: 3, y: 12, pieceNumber: 2 },
+        { image: '/assets/logos/node.svg', x: 2, y: 12, pieceNumber: 3 },
+        { image: '/assets/logos/node.svg', x: 3, y: 11, pieceNumber: 4 }
     ]);
     const [yellows, setYellows] = useState([
-        { image: '../src/assets/logos/js.svg', x: 11, y: 11 },
-        { image: '../src/assets/logos/js.svg', x: 11, y: 12 },
-        { image: '../src/assets/logos/js.svg', x: 12, y: 11 },
-        { image: '../src/assets/logos/js.svg', x: 12, y: 12 }
+        { image: '/assets/logos/js.svg', x: 11, y: 11, pieceNumber: 1 },
+        { image: '/assets/logos/js.svg', x: 11, y: 12, pieceNumber: 2 },
+        { image: '/assets/logos/js.svg', x: 12, y: 11, pieceNumber: 3 },
+        { image: '/assets/logos/js.svg', x: 12, y: 12, pieceNumber: 4 }
     ]);
     const [blues, setBlues] = useState([
-        { image: '../src/assets/logos/react.svg', x: 11, y: 3 },
-        { image: '../src/assets/logos/react.svg', x: 12, y: 3 },
-        { image: '../src/assets/logos/react.svg', x: 11, y: 2 },
-        { image: '../src/assets/logos/react.svg', x: 12, y: 2 }
+        { image: '/assets/logos/react.svg', x: 11, y: 3, pieceNumber: 1  },
+        { image: '/assets/logos/react.svg', x: 12, y: 3, pieceNumber: 2  },
+        { image: '/assets/logos/react.svg', x: 11, y: 2, pieceNumber: 3  },
+        { image: '/assets/logos/react.svg', x: 12, y: 2, pieceNumber: 4  }
     ]);
+    
+    useEffect(() => {
+        const fetchGameId = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/${user.name}`);
+            setGameCode(response.data.gameCode);
+        } catch (error) {
+            console.error('An error occurred while retrieving the game ID:', error);
+        }
+    };
+        fetchGameId();
+    }, [user.name]);
 
+    useEffect(() => {
+        const fetchGameData = async () => {
+            try {
+                if (gameCode) {
+                    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/all/${gameCode}`);
+                    setGameData(response.data);
+                }
+                setIsLoading(false); // Set isLoading to false when gameData is set
+            } catch (error) {
+                console.error('An error occurred while retrieving the game data:', error);
+            }
+        };
+
+        fetchGameData();
+    }, [user.name, rolledValue]);
+      
+    
+
+    // Function to add a player to the list
+    const addPlayer = (player) => {
+        setPlayers((players) => {
+        // Check if the player already exists in the list
+        if (players.some((p) => p.id === player.id)) {
+            return players; // Player already exists, return the current list
+        } else {
+            return [...players, player]; // Player doesn't exist, add it to the list
+        }
+        });
+    };
+    const currentPlayer = user.name;
+    
+    useEffect(() => {
+        addPlayer(user.name);
+      }, []);
+      
+    useEffect(() => {
+        if (players.length > 0) {
+          setPlayerInTurn(players[currentPlayerIndex]);
+        }
+      }, [players, currentPlayerIndex]);
+      
+    const handleNextTurn = () => {
+        setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length);
+    };
+    
+    useEffect(() => {
+        if (rolledValue !== null) {
+          makeMove();
+        }
+      }, [rolledValue]);
+
+    const makeMove = async () => {
+        try {
+            if (gameCode) {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games/${gameCode}/moves`, {
+                    userName: user.name,
+                    pieceNumber: selectedPiece,
+                    diceValue: rolledValue
+                });
+                setError(false);
+                setMsg('Piece moved!');
+
+            }
+            
+        } catch (error) {
+            console.error('An error occurred while trying to move a piece:', error);
+            setError(true);
+            setMsg(`${error.response.data.error}`);
+        }
+        };
+    
+    
+    const handlePieceClick = (pieceNumber) => {
+        console.log(pieceNumber);
+        setSelectedPiece(pieceNumber);
+
+        };
+        
+          
+    
 
     const rollDie = () => {
         if (currentPlayer === playerInTurn) {
             const dice = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
             const index = Math.floor(Math.random() * dice.length);
-            const rolledValue = index + 1; // Add 1 to get the rolled value
-
+            setRolledValue(index + 1);
             // Update the rolled number
             setRolledNumber(dice[index]);
+        }
+        };
+          
+        
 
-            // Update the current player
-            if (currentPlayer == 4) {
-                setCurrentPlayer(1);
-                setPlayerInTurn(1);
+    const reDraw = () => {
+        if (gameData.state && gameData.state.player1) {
+          const player1Data = gameData.state.player1;
+          setReds(prevReds => {
+            return prevReds.map((redPiece, i) => {
+              const position = player1Data[`piece${i + 1}`].piece.position;
+              const box = boxes.find(box => box.number === position);
+              if (box) {
+                return { ...redPiece, x: box.x, y: box.y };
+              }
+              return redPiece;
+            });
+          });
+        }
+        if (gameData.state && gameData.state.player2) {
+            const player2Data = gameData.state.player2;
+            setGreens(prevGreens => {
+              return prevGreens.map((greenPiece, i) => {
+                const position = player2Data[`piece${i + 1}`].piece.position;
+                const box = boxes.find(box => box.number === position);
+                if (box) {
+                  return { ...greenPiece, x: box.x, y: box.y };
+                }
+                return greenPiece;
+              });
+            });
+          }
+          if (gameData.state && gameData.state.player3) {
+            const player3Data = gameData.state.player3;
+            setYellows(prevYellows => {
+              return prevYellows.map((yellowPiece, i) => {
+                const position = player3Data[`piece${i + 1}`].piece.position;
+                const box = boxes.find(box => box.number === position);
+                if (box) {
+                  return { ...yellowPiece, x: box.x, y: box.y };
+                }
+                return yellowPiece;
+              });
+            });
+          }
+          if (gameData.state && gameData.state.player4) {
+            const player4Data = gameData.state.player4;
+            setBlues(prevBlues => {
+              return prevBlues.map((bluePiece, i) => {
+                const position = player4Data[`piece${i + 1}`].piece.position;
+                const box = boxes.find(box => box.number === position);
+                if (box) {
+                  return { ...bluePiece, x: box.x, y: box.y };
+                }
+                return bluePiece;
+              });
+            });
+          }
+        
+        handleNextTurn();
+        };
+    
+    useEffect(() => {
+        if (gameData) {
+            reDraw();
+        }
+    }, [gameData]);
 
-            }
-            else {
-                setCurrentPlayer(currentPlayer + 1);
-                setPlayerInTurn(playerInTurn + 1);
-            }
-
-            if (currentPlayer === 1) {
-                // Move one of the red pieces
-                const updatedReds = [...reds];
-                const randomRedIndex = Math.floor(Math.random() * updatedReds.length);
-                const redPiece = updatedReds[randomRedIndex];
-                let inStart = false;
-                startReds.forEach(r => {
-                    if (r.x === redPiece.x && r.y === redPiece.y) {
-                        inStart = true
+    const draw = () => {
+        let newBoard = [];
+        for (let j = verticalAxis.length - 1; j >= 0; j--) {
+            for (let i = 0; i < horizontalAxis.length; i++){
+                let image = null;
+                let piece = null;
+                let color = null;
+                reds.forEach(p => {
+                    if (p.x === i && p.y === j) {
+                        image = p.image;
+                        piece = p.pieceNumber;
+                        color = 'red';
                     }
                 });
-                if (inStart) {
-                    redPiece.x = 6;
-                    redPiece.y = 2;
-                }
-                else {
-                    let positionNumber = [redPiece.x, redPiece.y]
-                    boxes.forEach(b => {
-                        if (redPiece.x === b.x && redPiece.y === b.y) {
-                            positionNumber = b.number;
-                        }
-                    });
-                    boxes.forEach(b => {
-                        if (positionNumber + rolledValue === b.number) {
-                            redPiece.x = b.x;
-                            redPiece.y = b.y;
-                        }
-                    });
-                }
-                setReds(updatedReds); // Update the state with the new positions of red pieces
-            } else if (currentPlayer === 2) {
-                // Move one of the green pieces
-                const updatedGreens = [...greens];
-                const randomGreenIndex = Math.floor(Math.random() * updatedGreens.length);
-                const greenPiece = updatedGreens[randomGreenIndex];
-                let inStart = false;
-                startGreens.forEach(r => {
-                    if (r.x === greenPiece.x && r.y === greenPiece.y) {
-                        inStart = true
+                greens.forEach(p => {
+                    if (p.x === i && p.y === j) {
+                        image = p.image;
+                        piece = p.pieceNumber;
+                        color = 'green';
                     }
                 });
-                if (inStart) {
-                    greenPiece.x = 2;
-                    greenPiece.y = 8;
-                }
-                else {
-                    let positionNumber = [greenPiece.x, greenPiece.y]
-                    boxes.forEach(b => {
-                        if (greenPiece.x === b.x && greenPiece.y === b.y) {
-                            positionNumber = b.number;
-                        }
-                    });
-                    boxes.forEach(b => {
-                        if (positionNumber + rolledValue === b.number) {
-                            greenPiece.x = b.x;
-                            greenPiece.y = b.y;
-                        }
-                    });
-                }
-                setGreens(updatedGreens); // Update the state with the new positions of green pieces
-            } else if (currentPlayer === 3) {
-                // Move one of the yellow pieces
-                const updatedYellows = [...yellows];
-                const randomYellowIndex = Math.floor(Math.random() * updatedYellows.length);
-                const yellowPiece = updatedYellows[randomYellowIndex];
-                let inStart = false;
-                startYellows.forEach(r => {
-                    if (r.x === yellowPiece.x && r.y === yellowPiece.y) {
-                        inStart = true
+                yellows.forEach(p => {
+                    if (p.x === i && p.y === j) {
+                        image = p.image;
+                        piece = p.pieceNumber;
+                        color = 'yellow';
                     }
                 });
-                if (inStart) {
-                    yellowPiece.x = 8;
-                    yellowPiece.y = 12;
-                }
-                else {
-                    let positionNumber = [yellowPiece.x, yellowPiece.y]
-                    boxes.forEach(b => {
-                        if (yellowPiece.x === b.x && yellowPiece.y === b.y) {
-                            positionNumber = b.number;
-                        }
-                    });
-                    boxes.forEach(b => {
-                        if (positionNumber + rolledValue === b.number) {
-                            yellowPiece.x = b.x;
-                            yellowPiece.y = b.y;
-                        }
-                    });
-                }
-                setYellows(updatedYellows); // Update the state with the new positions of yellow pieces
-            } else if (currentPlayer === 4) {
-                // Move one of the blue pieces
-                const updatedBlues = [...blues];
-                const randomBlueIndex = Math.floor(Math.random() * updatedBlues.length);
-                const bluePiece = updatedBlues[randomBlueIndex];
-                let inStart = false;
-                startBlues.forEach(r => {
-                    if (r.x === bluePiece.x && r.y === bluePiece.y) {
-                        inStart = true
+                blues.forEach(p => {
+                    if (p.x === i && p.y === j) {
+                        image = p.image;
+                        piece = p.pieceNumber;
+                        color = 'blue';
                     }
                 });
-                if (inStart) {
-                    bluePiece.x = 12;
-                    bluePiece.y = 6;
-                }
-                else {
-                    let positionNumber = [bluePiece.x, bluePiece.y]
-                    boxes.forEach(b => {
-                        if (bluePiece.x === b.x && bluePiece.y === b.y) {
-                            positionNumber = b.number;
-                        }
-                    });
-                    boxes.forEach(b => {
-                        if (positionNumber + rolledValue === b.number) {
-                            bluePiece.x = b.x;
-                            bluePiece.y = b.y;
-                        }
-                    });
-                }
-                setBlues(updatedBlues); // Update the state with the new positions of blue pieces
+                newBoard.push(<Tile key={`${i},${j}`} i={i} j={j} image={image} pieceNumber={piece} onClick={() => handlePieceClick(piece)}/>);
             }
         }
-    };
+        return newBoard; // Return the new board array
+    }
 
-    let board = []
-    for (let j = verticalAxis.length - 1; j >= 0; j--) {
-        for (let i = 0; i < horizontalAxis.length; i++){
-            let image = null;
-            reds.forEach(p => {
-                if (p.x === i && p.y === j) {
-                    image = p.image;
-                }
-            });
-            greens.forEach(p => {
-                if (p.x === i && p.y === j) {
-                    image = p.image;
-                }
-            });
-            yellows.forEach(p => {
-                if (p.x === i && p.y === j) {
-                    image = p.image;
-                }
-            });
-            blues.forEach(p => {
-                if (p.x === i && p.y === j) {
-                    image = p.image;
-                }
-            });
-            board.push(<Tile key={`${i},${j}`} i={i} j={j} image={image}/>);
-        }
+
+    if (isLoading) {
+        return <div>Loading...</div>;
     }
     
+
     return (
         <>
         <div className="gameboard-container">
             <div className="dice-container">
-                <h3>Player {playerInTurn} Roll the die!</h3>
+                <h3> {playerInTurn} Roll the die!</h3>
                 <div id="dice">{rolledNumber}</div>
-                <button onClick={rollDie} disabled={currentPlayer !== playerInTurn}>Roll</button>
+                <br />
+                <div>
+                    {gameCode ? (
+                        <p>The game ID for participant {user.name} is {gameCode}</p>
+                    ) : (
+                        <p>Loading game ID...</p>
+                    )}
+                </div>
+                <div className='info-container'>{players.length < 1 && <div>Waiting for players...</div>}</div>
+                <button onClick={rollDie} disabled={currentPlayer !== playerInTurn || players.length < 1 || selectedPiece === null }>Roll</button>
             </div>
             <div id="gameboard">
-                {board}
+                {draw()}
             </div>
         </div>
         </>

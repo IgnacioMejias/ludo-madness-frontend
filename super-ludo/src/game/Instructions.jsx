@@ -1,9 +1,9 @@
 import "./Instructions.css"
 import React, { useEffect, useRef } from 'react';
 import Slider from "./Slider";
-import boardImage from './../assets/board.jpg';
-import p2Image from './../assets/2p.png';
-import p4Image from './../assets/4p.png';
+import boardImage from '/assets/board.jpg';
+import p2Image from '/assets/2p.png';
+import p4Image from '/assets/4p.png';
 
 
 const Instructions = () => {
