@@ -3,7 +3,6 @@ import axios from 'axios';
 import './GameBoard.css'
 import Tile from '../Tile/Tile'
 import { AuthContext } from '../../../auth/AuthContext'
-import VITE_BACKEND_URL from '../../../config'
 
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"]
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
@@ -28,7 +27,6 @@ export default function GameBoard() {
 
     const { user } = useContext(AuthContext);
     const [players, setPlayers] = useState([]);
-    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
     const [selectedPiece, setSelectedPiece] = useState(null);
     const [rolledNumber, setRolledNumber] = useState("⚀");
     const [rolledValue, setRolledValue] = useState(null);
@@ -39,22 +37,22 @@ export default function GameBoard() {
     const [msg, setMsg] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [reds, setReds] = useState([
-        { image: '/assets/logos/html.svg', x: 3, y: 3, pieceNumber: 1 },
-        { image: '/assets/logos/html.svg', x: 2, y: 2, pieceNumber: 2 },
-        { image: '/assets/logos/html.svg', x: 2, y: 3, pieceNumber: 3 },
+        { image: '/assets/logos/html.svg', x: 2, y: 3, pieceNumber: 1 },
+        { image: '/assets/logos/html.svg', x: 3, y: 3, pieceNumber: 2 },
+        { image: '/assets/logos/html.svg', x: 2, y: 2, pieceNumber: 3 },
         { image: '/assets/logos/html.svg', x: 3, y: 2, pieceNumber: 4 }
     ]);
     const [greens, setGreens] = useState([
-        { image: '/assets/logos/node.svg', x: 2, y: 11, pieceNumber: 1 },
+        { image: '/assets/logos/node.svg', x: 2, y: 12, pieceNumber: 1 },
         { image: '/assets/logos/node.svg', x: 3, y: 12, pieceNumber: 2 },
-        { image: '/assets/logos/node.svg', x: 2, y: 12, pieceNumber: 3 },
+        { image: '/assets/logos/node.svg', x: 2, y: 11, pieceNumber: 3 },
         { image: '/assets/logos/node.svg', x: 3, y: 11, pieceNumber: 4 }
     ]);
     const [yellows, setYellows] = useState([
-        { image: '/assets/logos/js.svg', x: 11, y: 11, pieceNumber: 1 },
-        { image: '/assets/logos/js.svg', x: 11, y: 12, pieceNumber: 2 },
-        { image: '/assets/logos/js.svg', x: 12, y: 11, pieceNumber: 3 },
-        { image: '/assets/logos/js.svg', x: 12, y: 12, pieceNumber: 4 }
+        { image: '/assets/logos/js.svg', x: 11, y: 12, pieceNumber: 1 },
+        { image: '/assets/logos/js.svg', x: 12, y: 12, pieceNumber: 2 },
+        { image: '/assets/logos/js.svg', x: 11, y: 11, pieceNumber: 3 },
+        { image: '/assets/logos/js.svg', x: 12, y: 11, pieceNumber: 4 }
     ]);
     const [blues, setBlues] = useState([
         { image: '/assets/logos/react.svg', x: 11, y: 3, pieceNumber: 1 },
@@ -66,59 +64,114 @@ export default function GameBoard() {
     useEffect(() => {
         const fetchGameId = async () => {
         try {
-            const response = await axios.get(`${VITE_BACKEND_URL}/games/${user.name}`);
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/${user.name}`);
             setGameCode(response.data.gameCode);
         } catch (error) {
             console.error('An error occurred while retrieving the game ID:', error);
         }
     };
         fetchGameId();
-    }, [user.name]);
+    }, []);
+
+
+    const fetchGameData = async () => {
+        try {
+            if (gameCode) {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/all/${gameCode}`);
+                setGameData(response.data);
+            }
+            setIsLoading(false); // Set isLoading to false when gameData is set
+        } catch (error) {
+            console.error('An error occurred while retrieving the game data:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchGameData = async () => {
-            try {
-                if (gameCode) {
-                    const response = await axios.get(`${VITE_BACKEND_URL}/games/all/${gameCode}`);
-                    setGameData(response.data);
-                }
-                setIsLoading(false); // Set isLoading to false when gameData is set
-            } catch (error) {
-                console.error('An error occurred while retrieving the game data:', error);
-            }
-        };
-
-        fetchGameData();
-    }, [user.name, rolledValue]);
-      
+        // Fetch game data initially
+        if (gameCode) {
+            fetchGameData();
+        }
+        // Set up polling interval
+        const interval = setInterval(fetchGameData, 1000);
     
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+      }, [gameCode]);
 
+      
     // Function to add a player to the list
     const addPlayer = (player) => {
         setPlayers((players) => {
         // Check if the player already exists in the list
-        if (players.some((p) => p.id === player.id)) {
+        if (players.some((p) => p === player.user_name)) {
             return players; // Player already exists, return the current list
         } else {
-            return [...players, player]; // Player doesn't exist, add it to the list
+            return [...players, player.user_name]; // Player doesn't exist, add it to the list
         }
         });
     };
-    const currentPlayer = user.name;
     
     useEffect(() => {
-        addPlayer(user.name);
-      }, []);
-      
-    useEffect(() => {
-        if (players.length > 0) {
-          setPlayerInTurn(players[currentPlayerIndex]);
+        if (gameData) {
+            if (gameData.state.player1) {
+                addPlayer({
+                    id: "player1",
+                    user_name: gameData.state.player1.user_name
+                });
+            }
+            if (gameData.state.player2) {
+                addPlayer({
+                    id: "player2",
+                    user_name: gameData.state.player2.user_name
+                });
+            }
+            if (gameData.state.player3) {
+                addPlayer({
+                    id: "player3",
+                    user_name: gameData.state.player3.user_name
+                });
+            }
+            if (gameData.state.player4) {
+                addPlayer({
+                    id: "player4",
+                    user_name: gameData.state.player4.user_name
+                });
+            }
         }
-      }, [players, currentPlayerIndex]);
+    }, [gameData]);
+  
       
-    const handleNextTurn = () => {
-        setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length);
-    };
+
+    const currentPlayer = user.name;
+    
+    
+    const handleNextTurn = async () => {
+        if (players.length > 0) {
+          setPlayerInTurn(players[gameData.playerInTurn]);
+        }
+        let newIndex = 0;
+        if (gameData.playerInTurn + 1 === players.length) {
+            newIndex = 0;
+        }
+        else {
+            newIndex = gameData.playerInTurn + 1;
+        }
+        try {
+            if (gameCode) {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games/${gameCode}/playerInTurn`, {
+                    newIndex: newIndex
+                });
+                setError(false);
+                setMsg('player in turn changed');
+
+            }
+            
+        } catch (error) {
+            console.error('An error occurred while trying to change player in turn:', error);
+            setError(true);
+            setMsg(`${error.response.data.error}`);
+        }
+    }      
     
     useEffect(() => {
         if (rolledValue !== null) {
@@ -129,7 +182,7 @@ export default function GameBoard() {
     const makeMove = async () => {
         try {
             if (gameCode) {
-                await axios.post(`${VITE_BACKEND_URL}/games/${gameCode}/moves`, {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games/${gameCode}/moves`, {
                     userName: user.name,
                     pieceNumber: selectedPiece,
                     diceValue: rolledValue
@@ -144,6 +197,7 @@ export default function GameBoard() {
             setError(true);
             setMsg(`${error.response.data.error}`);
         }
+        
         };
     
     
@@ -162,13 +216,14 @@ export default function GameBoard() {
             setRolledValue(index + 1);
             // Update the rolled number
             setRolledNumber(dice[index]);
+            handleNextTurn();
         }
         };
           
         
 
     const reDraw = () => {
-        console.log(rolledValue);
+        setPlayerInTurn(players[gameData.playerInTurn]);
         if (gameData.state && gameData.state.player1) {
           const player1Data = gameData.state.player1;
           setReds(prevReds => {
@@ -202,55 +257,205 @@ export default function GameBoard() {
               }
               else {
                 const position = player1Data[`piece${i + 1}`].piece.position;
-                const box = boxes.find(box => box.number === position);
-                if (box) {
-                    return { ...redPiece, x: box.x, y: box.y, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                if (position === 0) {
+                    switch (i) {
+                        case 0:
+                            return { ...redPiece, x: 2, y: 3, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                        case 1:
+                            return { ...redPiece, x: 3, y: 3, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                        case 2:
+                            return { ...redPiece, x: 2, y: 2, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                        case 3:
+                            return { ...redPiece, x: 3, y: 2, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                    }
                 }
+                else {
+                    const box = boxes.find(box => box.number === position);
+                    if (box) {
+                        return { ...redPiece, x: box.x, y: box.y, pieceNumber: player1Data[`piece${i + 1}`].piece.number };
+                    }
+                }
+                
               }
               return redPiece;
             });
           });
         }
+        
         if (gameData.state && gameData.state.player2) {
             const player2Data = gameData.state.player2;
             setGreens(prevGreens => {
               return prevGreens.map((greenPiece, i) => {
-                const position = player2Data[`piece${i + 1}`].piece.position;
-                const box = boxes.find(box => box.number === position);
-                if (box) {
-                  return { ...greenPiece, x: box.x, y: box.y };
+                let position = { x: 0, y: 0 };
+                if (player2Data[`piece${i + 1}`].piece.status === "finalRow") {
+                  const leftToFinish =  player2Data[`piece${i + 1}`].piece.left_to_finish; 
+                  if (leftToFinish === 5) {
+                      position = { x: 1, y: 7 };
+                  }
+                  else if (leftToFinish === 4) {
+                      position = { x: 2, y: 7 };
+                  }
+                  else if (leftToFinish === 3) {
+                      position = { x: 3, y: 7 };
+                  }
+                  else if (leftToFinish === 2) {
+                      position = { x: 4, y: 7 };
+                  }
+                  else if (leftToFinish === 1) {
+                      position = { x: 5, y: 7 };
+                  }
+                  else if (leftToFinish === 0) {
+                      position = { x: 6, y: 7 };
+                  }
+                  return { ...greenPiece, x: position.x, y: position.y, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                }
+                else if (player2Data[`piece${i + 1}`].piece.status === "finished") {
+                  position = { x: 7, y: 7 };
+                  return { ...greenPiece, x: position.x, y: position.y, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                }
+                else {
+                  const position = player2Data[`piece${i + 1}`].piece.position;
+                  if (position === 0) {
+                      switch (i) {
+                          case 0:
+                              return { ...greenPiece, x: 2, y: 12, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                          case 1:
+                              return { ...greenPiece, x: 3, y: 12, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                          case 2:
+                              return { ...greenPiece, x: 2, y: 11, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                          case 3:
+                              return { ...greenPiece, x: 3, y: 11, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  else {
+                      const box = boxes.find(box => box.number === position);
+                      if (box) {
+                          return { ...greenPiece, x: box.x, y: box.y, pieceNumber: player2Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  
                 }
                 return greenPiece;
               });
             });
           }
+
           if (gameData.state && gameData.state.player3) {
             const player3Data = gameData.state.player3;
             setYellows(prevYellows => {
               return prevYellows.map((yellowPiece, i) => {
-                const position = player3Data[`piece${i + 1}`].piece.position;
-                const box = boxes.find(box => box.number === position);
-                if (box) {
-                  return { ...yellowPiece, x: box.x, y: box.y };
+                let position = { x: 0, y: 0 };
+                if (player3Data[`piece${i + 1}`].piece.status === "finalRow") {
+                  const leftToFinish =  player3Data[`piece${i + 1}`].piece.left_to_finish;  
+                  if (leftToFinish === 5) {
+                      position = { x: 7, y: 1 };
+                  }
+                  else if (leftToFinish === 4) {
+                      position = { x: 7, y: 2 };
+                  }
+                  else if (leftToFinish === 3) {
+                      position = { x: 7, y: 3 };
+                  }
+                  else if (leftToFinish === 2) {
+                      position = { x: 7, y: 4 };
+                  }
+                  else if (leftToFinish === 1) {
+                      position = { x: 7, y: 5 };
+                  }
+                  else if (leftToFinish === 0) {
+                      position = { x: 7, y: 7 };
+                  }
+                  return { ...yellowPiece, x: position.x, y: position.y, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                }
+                else if (player3Data[`piece${i + 1}`].piece.status === "finished") {
+                  position = { x: 7, y: 7 };
+                  return { ...yellowPiece, x: position.x, y: position.y, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                }
+                else {
+                  const position = player3Data[`piece${i + 1}`].piece.position;
+                  if (position === 0) {
+                      switch (i) {
+                          case 0:
+                              return { ...yellowPiece, x: 11, y: 12, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                          case 1:
+                              return { ...yellowPiece, x: 12, y: 12, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                          case 2:
+                              return { ...yellowPiece, x: 11, y: 11, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                          case 3:
+                              return { ...yellowPiece, x: 12, y: 11, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  else {
+                      const box = boxes.find(box => box.number === position);
+                      if (box) {
+                          return { ...yellowPiece, x: box.x, y: box.y, pieceNumber: player3Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  
                 }
                 return yellowPiece;
               });
             });
           }
+          
           if (gameData.state && gameData.state.player4) {
             const player4Data = gameData.state.player4;
             setBlues(prevBlues => {
               return prevBlues.map((bluePiece, i) => {
-                const position = player4Data[`piece${i + 1}`].piece.position;
-                const box = boxes.find(box => box.number === position);
-                if (box) {
-                  return { ...bluePiece, x: box.x, y: box.y };
+                let position = { x: 0, y: 0 };
+                if (player4Data[`piece${i + 1}`].piece.status === "finalRow") {
+                  const leftToFinish =  player4Data[`piece${i + 1}`].piece.left_to_finish;  
+                  if (leftToFinish === 5) {
+                      position = { x: 7, y: 1 };
+                  }
+                  else if (leftToFinish === 4) {
+                      position = { x: 7, y: 2 };
+                  }
+                  else if (leftToFinish === 3) {
+                      position = { x: 7, y: 3 };
+                  }
+                  else if (leftToFinish === 2) {
+                      position = { x: 7, y: 4 };
+                  }
+                  else if (leftToFinish === 1) {
+                      position = { x: 7, y: 5 };
+                  }
+                  else if (leftToFinish === 0) {
+                      position = { x: 7, y: 7 };
+                  }
+                  return { ...bluePiece, x: position.x, y: position.y, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                }
+                else if (player4Data[`piece${i + 1}`].piece.status === "finished") {
+                  position = { x: 7, y: 7 };
+                  return { ...bluePiece, x: position.x, y: position.y, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                }
+                else {
+                  const position = player4Data[`piece${i + 1}`].piece.position;
+                  if (position === 0) {
+                      switch (i) {
+                          case 0:
+                              return { ...bluePiece, x: 11, y: 3, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                          case 1:
+                              return { ...bluePiece, x: 12, y: 3, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                          case 2:
+                              return { ...bluePiece, x: 11, y: 2, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                          case 3:
+                              return { ...bluePiece, x: 12, y: 2, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  else {
+                      const box = boxes.find(box => box.number === position);
+                      if (box) {
+                          return { ...bluePiece, x: box.x, y: box.y, pieceNumber: player4Data[`piece${i + 1}`].piece.number };
+                      }
+                  }
+                  
                 }
                 return bluePiece;
               });
             });
           }
-        handleNextTurn();
+        
         };
     
     useEffect(() => {
@@ -260,13 +465,13 @@ export default function GameBoard() {
     }, [gameData, rolledValue]);
 
     const draw = () => {
-        console.log(rolledValue);
         let newBoard = [];
         for (let j = verticalAxis.length - 1; j >= 0; j--) {
             for (let i = 0; i < horizontalAxis.length; i++){
                 let image = null;
                 let piece = null;
                 let color = null;
+
                 reds.forEach(p => {
                     if (p.x === i && p.y === j) {
                         image = p.image;
@@ -306,7 +511,7 @@ export default function GameBoard() {
         return <div>Loading...</div>;
     }
     
-
+    
     return (
         <>
         <div className="gameboard-container">
@@ -316,13 +521,13 @@ export default function GameBoard() {
                 <br />
                 <div>
                     {gameCode ? (
-                        <p>The game ID for participant {user.name} is {gameCode}</p>
+                        <p>¡Hi {user.name}! The game code is {gameCode}</p>
                     ) : (
                         <p>Loading game ID...</p>
                     )}
                 </div>
-                <div className='info-container'>{players.length < 1 && <div>Waiting for players...</div>}</div>
-                <button onClick={rollDie} disabled={currentPlayer !== playerInTurn || players.length < 1 || selectedPiece === null }>Roll</button>
+                <div className='info-container'>{players.length < 2 && <div>Waiting for players...</div>}</div>
+                <button onClick={rollDie} disabled={currentPlayer !== playerInTurn || players.length < 2 || selectedPiece === null }>Roll</button>
             </div>
             <div id="gameboard">
                 {draw()}
