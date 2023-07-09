@@ -3,6 +3,7 @@ import axios from 'axios';
 import './GameBoard.css'
 import Tile from '../Tile/Tile'
 import { AuthContext } from '../../../auth/AuthContext'
+import VITE_BACKEND_URL from '../../../config';
 
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"]
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
@@ -64,7 +65,7 @@ export default function GameBoard() {
     useEffect(() => {
         const fetchGameId = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/${user.name}`);
+            const response = await axios.get(`${VITE_BACKEND_URL}/games/${user.name}`);
             setGameCode(response.data.gameCode);
         } catch (error) {
             console.error('An error occurred while retrieving the game ID:', error);
@@ -77,7 +78,7 @@ export default function GameBoard() {
     const fetchGameData = async () => {
         try {
             if (gameCode) {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/games/all/${gameCode}`);
+                const response = await axios.get(`${VITE_BACKEND_URL}/games/all/${gameCode}`);
                 setGameData(response.data);
             }
             setIsLoading(false); // Set isLoading to false when gameData is set
@@ -158,7 +159,7 @@ export default function GameBoard() {
         }
         try {
             if (gameCode) {
-                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games/${gameCode}/playerInTurn`, {
+                await axios.post(`${VITE_BACKEND_URL}/games/${gameCode}/playerInTurn`, {
                     newIndex: newIndex
                 });
                 setError(false);
@@ -182,7 +183,7 @@ export default function GameBoard() {
     const makeMove = async () => {
         try {
             if (gameCode) {
-                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/games/${gameCode}/moves`, {
+                await axios.post(`${VITE_BACKEND_URL}/games/${gameCode}/moves`, {
                     userName: user.name,
                     pieceNumber: selectedPiece,
                     diceValue: rolledValue
